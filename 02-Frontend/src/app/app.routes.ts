@@ -1,0 +1,8 @@
+import { Routes } from '@angular/router';
+import { EpisodiosComponent } from './pages/episodios/episodios'; // Eliminado '.component' del path
+
+export const routes: Routes = [
+  { path: '', redirectTo: 'episodios', pathMatch: 'full' },
+  { path: 'episodios', component: EpisodiosComponent },
+  { path: '**', redirectTo: 'episodios' }
+];

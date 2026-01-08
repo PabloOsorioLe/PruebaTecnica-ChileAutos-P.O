@@ -35,13 +35,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Dtos\**" />
     <Compile Remove="Migrations\**" />
-    <Content Remove="Dtos\**" />
     <Content Remove="Migrations\**" />
-    <EmbeddedResource Remove="Dtos\**" />
     <EmbeddedResource Remove="Migrations\**" />
-    <None Remove="Dtos\**" />
     <None Remove="Migrations\**" />
   </ItemGroup>
 

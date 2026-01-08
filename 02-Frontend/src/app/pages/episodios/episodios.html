@@ -1,0 +1,46 @@
+<div class="episodios-container">
+  <header class="page-header">
+    <h1>Explorador de Episodios</h1>
+    <p>Datos obtenidos desde el BFF .NET 8</p>
+  </header>
+
+  @if (episodeService.isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Consultando episodios...</p>
+    </div>
+  } @else {
+    
+    <div class="episodes-grid">
+      @for (item of episodeService.episodes(); track item.id) {
+        <article class="episode-card">
+          <div class="card-tag">{{ item.episode }}</div>
+          <div class="card-content">
+            <h3>{{ item.name }}</h3>
+            <p><strong>Estreno:</strong> {{ item.airDate }}</p>
+          </div>
+        </article>
+      } @empty {
+        <div class="empty-message">
+          <p>No se encontraron episodios en este momento.</p>
+        </div>
+      }
+    </div>
+
+    <nav class="pagination-nav">
+      <button 
+        [disabled]="currentPage() === 1" 
+        (click)="loadPage(currentPage() - 1)">
+        &laquo; Anterior
+      </button>
+
+      <span class="current-info">Página {{ currentPage() }}</span>
+
+      <button 
+        [disabled]="episodeService.episodes().length === 0"
+        (click)="loadPage(currentPage() + 1)">
+        Siguiente &raquo;
+      </button>
+    </nav>
+  }
+</div>
