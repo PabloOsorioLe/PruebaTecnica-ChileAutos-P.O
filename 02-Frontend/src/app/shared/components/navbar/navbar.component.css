@@ -1,0 +1,145 @@
+.navbar-sober {
+  background-color: #1e293b;
+  color: #f8fafc;
+  padding: 0.75rem 1.5rem;
+  
+  /* CAMBIO: De sticky a fixed para mayor estabilidad en PWA */
+  position: fixed; 
+  top: 0;
+  left: 0;
+  right: 0;
+  
+  height: var(--nav-height); /* Aseguramos que respete la variable */
+  z-index: 1050;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 1.15rem;
+  white-space: nowrap;
+}
+
+.nav-brand i { color: #94a3b8; font-size: 1.4rem; }
+.nav-brand small { font-weight: 300; opacity: 0.6; }
+
+/* Enlaces */
+.nav-content {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-grow: 1;
+  justify-content: space-between;
+  margin-left: 3rem;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.nav-links a:hover {
+  background-color: #334155;
+  color: #fff;
+}
+
+.nav-links a.active {
+  background-color: #0f172a; /* Azul más oscuro para activo */
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Acciones */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  border-right: 1px solid #334155;
+  padding-right: 1.5rem;
+}
+
+.link-logout {
+  color: #fca5a5; /* Rojo suave */
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.link-logout:hover {
+  color: #f87171;
+}
+
+/* Responsive */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 991px) {
+  .nav-toggle { display: block; }
+  
+  .nav-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #1e293b;
+    flex-direction: column;
+    padding: 1.5rem;
+    margin: 0;
+    border-top: 1px solid #334155;
+  }
+
+  .nav-content.show { display: flex; }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-actions {
+    margin-top: 1.5rem;
+    width: 100%;
+    justify-content: center;
+  }
+}
