@@ -1,0 +1,85 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start; 
+  justify-content: center;
+  background-color: #f1f5f9;
+  padding-top: 8vh; 
+}
+
+.login-card {
+  background: #ffffff;
+  padding: 3rem 2.5rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #e2e8f0;
+}
+
+.login-icon-box {
+  font-size: 3.5rem;
+  color: #1e293b; /* Azul pizarra muy oscuro */
+  margin-bottom: 0.5rem;
+}
+
+.login-header h2 {
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  margin-bottom: 0;
+}
+
+.login-header h5 {
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+/* Estilo de los inputs */
+.form-control {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+}
+
+.form-control:focus {
+  background-color: #ffffff;
+  border-color: #64748b;
+  box-shadow: none;
+}
+
+/* Botón con estilo sobrio */
+.btn-sober {
+  background-color: #1e293b;
+  color: #f8fafc;
+  border: none;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-sober:hover {
+  background-color: #334155;
+  color: #ffffff;
+}
+
+.btn-sober:disabled {
+  background-color: #94a3b8;
+}
+
+.btn-toggle {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94a3b8;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.btn-toggle:hover {
+  color: #475569;
+}
