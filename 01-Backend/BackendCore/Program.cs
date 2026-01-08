@@ -1,108 +1,72 @@
-using AspNetCore.Reporting;
-using BackendCore.Data;
-using BackendCore.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Text;
-using QuestPDF.Drawing;
-using QuestPDF.Infrastructure;
-using System.IO;
-
-// ✅ 1. IMPORTANTE: Necesario para reconocer EmailService y NotificacionVencimientoService
-
-QuestPDF.Settings.License = LicenseType.Community;
-
-// Registrar fuente personalizada SIN alias
-var fontPath = Path.Combine(AppContext.BaseDirectory, "Fonts", "OpenSans-Regular.ttf");
-
-if (!File.Exists(fontPath))
-{
-    Console.WriteLine($"❌ Fuente NO encontrada: {fontPath}");
-}
-else
-{
-    Console.WriteLine($"✅ Fuente encontrada: {fontPath}");
-    FontManager.RegisterFont(File.OpenRead(fontPath));
-}
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
+using BackendCore.Interfaces; // Asegúrate de tener estos usings
+using BackendCore.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-// Soporte para páginas de código extendidas (necesario para RDLC)
-Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-// Configurar Kestrel para aceptar cuerpos de petición grandes (hasta 20 MB)
-builder.WebHost.ConfigureKestrel(serverOptions =>
+// -----------------------------------------------------------
+// 1. REGISTRO DE SERVICIOS (Antes de builder.Build())
+// -----------------------------------------------------------
+
+// HttpClient para el BFF
+builder.Services.AddHttpClient("RickAndMorty", client =>
 {
-    serverOptions.Limits.MaxRequestBodySize = 20 * 1024 * 1024;
+    client.BaseAddress = new Uri(builder.Configuration["RickAndMortyApi:BaseUrl"] ?? "https://rickandmortyapi.com/api/");
 });
 
-// Configurar DbContext con SQL Server
-builder.Services.AddDbContext<BackendCoreContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// REQUISITO SOLID: Inyección de dependencias
+// Esta línea DEBE ir aquí, antes del Build
+builder.Services.AddScoped<IEpisodeService, EpisodeService>();
 
-// Controllers + JSON internacional
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.Encoder =
-            System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All);
+        options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
     });
 
-// Swagger para desarrollo
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// ✅ CORS para desarrollo y producción (Mantenemos tus orígenes específicos)
-var corsPolicyName = "AllowFrontend";
+builder.Services.AddHealthChecks();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: corsPolicyName, policy =>
+    options.AddPolicy("AllowAngularDev", policy =>
     {
-        policy.WithOrigins(
-                 "http://localhost:4200",
-                 "https://fullpega.cl",
-                 "https://www.fullpega.cl",
-                 "", // ✅ Backend
-                 ""    // ✅ Frontend
-             )
-             .AllowAnyHeader()
-             .AllowAnyMethod();
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
+// -----------------------------------------------------------
+// 2. CONSTRUCCIÓN DE LA APP
+// -----------------------------------------------------------
 var app = builder.Build();
 
-// ✅ Swagger solo en desarrolloS
+// -----------------------------------------------------------
+// 3. MIDDLEWARES (Configuración del Pipeline)
+// -----------------------------------------------------------
+
+// REQUISITO: Manejo de errores global
+app.UseMiddleware<BackendCore.Middlewares.ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// ✅ Middlewares en orden correcto
 app.UseRouting();
+app.UseCors("AllowAngularDev");
 
-// Aplicar CORS antes de MapControllers()
-app.UseCors(corsPolicyName);
-
-// Redirigir HTTPS solo en producción
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
 
 app.UseAuthorization();
-
 app.MapControllers();
-
-// ==================================================================
-// ✅ ENDPOINT PARA CRON-JOB.ORG 
-// ==================================================================
-// URL: https://supplyconnect-ljn7.onrender.com/healthz
-app.MapGet("/healthz", () =>
-{
-    return Results.Ok(new { status = "Alive", system = "SupplyConnect", timestamp = DateTime.UtcNow });
-})
-.WithName("HealthCheck");
-// ==================================================================
+app.MapHealthChecks("/healthz");
 
 app.Run();

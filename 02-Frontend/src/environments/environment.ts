@@ -1,5 +1,4 @@
 export const environment = {
-  production: false,
-   //apiUrl: 'http://192.168.1.201:5206/api'
-   apiUrl: 'http://localhost:3000/api'
+  production: true,
+  apiUrl: 'https://inventorycloud-5ik9.onrender.com/api' // Tu URL de Render
 };
