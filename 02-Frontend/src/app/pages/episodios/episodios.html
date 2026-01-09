@@ -2,45 +2,93 @@
   <header class="page-header">
     <h1>Explorador de Episodios</h1>
     <p>Datos obtenidos desde el BFF .NET 8</p>
+
+    <div class="search-box">
+      <input type="text" 
+             placeholder="Buscar por nombre o codigo (ej: S01)..." 
+             [value]="searchTerm()"
+             (input)="onSearch($event)">
+    </div>
   </header>
 
   @if (episodeService.isLoading()) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>Consultando episodios...</p>
+    <div class="episodes-grid">
+      @for (i of [1,2,3,4,5,6,7,8,9]; track i) {
+        <div class="skeleton-card"></div>
+      }
     </div>
   } @else {
-    
     <div class="episodes-grid">
-      @for (item of episodeService.episodes(); track item.id) {
-        <article class="episode-card">
+      @for (item of filteredEpisodes(); track item.id) {
+        <article class="episode-card" (click)="openModal(item.id)" style="cursor: pointer;">
+          <div class="card-image">
+            <img [src]="'https://rickandmortyapi.com/api/character/avatar/' + item.id + '.jpeg'"
+                 alt="Rick and Morty Episode">
+          </div>
+
           <div class="card-tag">{{ item.episode }}</div>
           <div class="card-content">
             <h3>{{ item.name }}</h3>
-            <p><strong>Estreno:</strong> {{ item.airDate }}</p>
+            <p><strong>Estreno:</strong> {{ item.air_date | date: 'dd/MM/yyyy' }}</p>
+            <span class="view-details">Ver personajes &rarr;</span>
           </div>
         </article>
       } @empty {
         <div class="empty-message">
-          <p>No se encontraron episodios en este momento.</p>
+          <p>No se encontraron episodios que coincidan con "{{ searchTerm() }}"</p>
         </div>
       }
     </div>
 
     <nav class="pagination-nav">
-      <button 
-        [disabled]="currentPage() === 1" 
-        (click)="loadPage(currentPage() - 1)">
+      <button [disabled]="currentPage() === 1" (click)="loadPage(currentPage() - 1)">
         &laquo; Anterior
       </button>
-
-      <span class="current-info">Página {{ currentPage() }}</span>
-
-      <button 
-        [disabled]="episodeService.episodes().length === 0"
-        (click)="loadPage(currentPage() + 1)">
+      <span class="current-info">Pagina {{ currentPage() }}</span>
+      <button [disabled]="currentPage() >= 3" (click)="loadPage(currentPage() + 1)">
         Siguiente &raquo;
       </button>
     </nav>
+  }
+
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        
+        <button class="modal-close" (click)="closeModal()">&times;</button>
+
+        @if (isModalLoading()) {
+          <div class="modal-loader">
+            <div class="spinner"></div>
+            <p>Cargando información y personajes...</p>
+          </div>
+        } @else {
+          <div class="modal-header">
+            <span class="episode-tag">{{ selectedEpisode()?.episode }}</span>
+            <h2>{{ selectedEpisode()?.name }}</h2>
+            <p><strong>Lanzamiento oficial:</strong> {{ selectedEpisode()?.air_date | date: 'dd/MM/yyyy' }}</p>
+          </div>
+
+          <div class="modal-body">
+            <h3>Personajes en este episodio</h3>
+            <div class="mini-char-grid">
+              @for (char of modalCharacters(); track char.id) {
+                <div class="mini-char-card">
+                  <img [src]="char.image" [alt]="char.name">
+                  <div class="mini-char-info">
+                    <span class="char-name">{{ char.name }}</span>
+                    <span class="char-status" [class]="char.status.toLowerCase()">
+                      {{ char.status }}
+                    </span>
+                  </div>
+                </div>
+              } @empty {
+                <p>No se encontraron personajes disponibles.</p>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
   }
 </div>

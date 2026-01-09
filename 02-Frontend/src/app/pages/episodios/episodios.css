@@ -1,3 +1,6 @@
+/* ========================================== */
+/* 1. CONTENEDOR Y CABECERA                   */
+/* ========================================== */
 .episodios-container {
   padding: 2rem 0;
 }
@@ -13,7 +16,34 @@
   margin-bottom: 0.5rem;
 }
 
-/* Grilla Responsiva */
+/* ========================================== */
+/* 2. BUSCADOR                                */
+/* ========================================== */
+.search-box {
+  margin-top: 20px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: 2px solid #e0e0e0;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+}
+
+.search-box input:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+}
+
+/* ========================================== */
+/* 3. GRILLA Y TARJETAS DE EPISODIOS          */
+/* ========================================== */
 .episodes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -21,7 +51,6 @@
   margin-bottom: 3rem;
 }
 
-/* Diseño de Tarjetas */
 .episode-card {
   background: #ffffff;
   border-radius: 12px;
@@ -29,11 +58,19 @@
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid #eee;
+  padding: 0;
 }
 
 .episode-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.card-image img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
 }
 
 .card-tag {
@@ -54,47 +91,29 @@
   color: #2c3e50;
 }
 
-/* Paginación */
-.pagination-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 50px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-button {
-  padding: 0.75rem 1.5rem;
-  border-radius: 25px;
-  border: none;
-  background: #2c3e50;
-  color: white;
-  cursor: pointer;
+.view-details {
+  display: block;
+  margin-top: 1rem;
+  color: #3498db;
   font-weight: 600;
-  transition: background 0.3s;
+  font-size: 0.9rem;
 }
 
-button:hover:not(:disabled) {
-  background: #34495e;
+/* ========================================== */
+/* 4. ESTADOS DE CARGA Y SKELETONS            */
+/* ========================================== */
+.skeleton-card {
+  height: 250px;
+  background: #eee;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.5s infinite;
 }
 
-button:disabled {
-  background: #bdc3c7;
-  cursor: not-allowed;
-}
-
-.current-info {
-  font-weight: bold;
-  color: #7f8c8d;
-}
-
-/* Spinner de carga simple */
-.loading-state {
-  text-align: center;
-  padding: 5rem;
+@keyframes skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .spinner {
@@ -110,4 +129,130 @@ button:disabled {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* ========================================== */
+/* 5. MODAL DE DETALLE (NUEVO)                */
+/* ========================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px); /* Efecto desenfoque profesional */
+}
+
+.modal-content {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.5rem;
+  font-size: 2.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #95a5a6;
+  line-height: 1;
+}
+
+.modal-header {
+  border-bottom: 2px solid #f1f1f1;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.episode-tag {
+  background: #e74c3c;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* ========================================== */
+/* 6. PERSONAJES DENTRO DEL MODAL             */
+/* ========================================== */
+.mini-char-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.mini-char-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.mini-char-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f0f0f0;
+  margin-bottom: 0.5rem;
+}
+
+.char-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #2c3e50;
+  display: block;
+}
+
+.char-status {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.char-status.alive { color: #27ae60; }
+.char-status.dead { color: #e74c3c; }
+.char-status.unknown { color: #95a5a6; }
+
+/* ========================================== */
+/* 7. PAGINACIÓN                              */
+/* ========================================== */
+.pagination-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.pagination-nav button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  background: #2c3e50;
+  color: white;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.pagination-nav button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
 }

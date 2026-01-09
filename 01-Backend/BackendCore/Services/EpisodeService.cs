@@ -1,6 +1,7 @@
 ﻿using BackendCore.DTOs;
 using BackendCore.Interfaces;
 using System.Text.Json;
+using System.Net.Http.Json; // Necesario para GetFromJsonAsync
 
 namespace BackendCore.Services
 {
@@ -10,25 +11,38 @@ namespace BackendCore.Services
 
         public EpisodeService(IHttpClientFactory httpClientFactory)
         {
-            // Usamos el cliente nombrado que configuraste en Program.cs
             _httpClient = httpClientFactory.CreateClient("RickAndMorty");
         }
 
         public async Task<PaginatedResponse<EpisodeDto>> GetEpisodesAsync(int page)
         {
-            // Consumimos la API externa usando el parámetro de página
             var response = await _httpClient.GetAsync($"episode?page={page}");
 
             if (!response.IsSuccessStatusCode)
-                throw new HttpRequestException($"Error al consultar la API de Rick & Morty: {response.StatusCode}");
+                throw new HttpRequestException($"Error al consultar la API: {response.StatusCode}");
 
             var content = await response.Content.ReadAsStringAsync();
-
-            // Deserializamos con CaseInsensitive porque la API usa minúsculas
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var result = JsonSerializer.Deserialize<PaginatedResponse<EpisodeDto>>(content, options);
 
             return result ?? new PaginatedResponse<EpisodeDto>();
+        }
+
+        public async Task<EpisodeDto?> GetEpisodeByIdAsync(int id)
+        {
+          
+            var response = await _httpClient.GetAsync($"episode/{id}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+           
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var content = await response.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<EpisodeDto>(content, options);
         }
     }
 }

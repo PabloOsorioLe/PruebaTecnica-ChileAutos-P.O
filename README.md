@@ -60,3 +60,22 @@ Navegar a la carpeta 02-Frontend.
 Ejecutar npm install.
 
 Ejecutar ng serve -o.
+
+
+** UX y Navegacion Dinamica: Implementacion de Modales
+Se opto por una arquitectura de Vista Unica con Contexto para mejorar la experiencia del usuario. En lugar de navegar a una pagina independiente para ver el detalle, se implento un Modal interactivo con backdrop-filter: blur. Esto permite que el usuario explore los personajes de un episodio sin perder su posicion en el scroll de la lista ni su termino de busqueda actual. Para el renderizado eficiente de este elemento, se utilizo la nueva sintaxis de Control Flow (@if) de Angular 19, asegurando que el modal solo exista en el DOM cuando esta activo.
+
+** Orquestacion de Datos con RxJS (forkJoin)
+Un desafio tecnico importante fue que el endpoint de episodios de la API original solo entrega un listado de URLs para los personajes, sin sus nombres ni imagenes. Para solucionar esto sin sobrecargar el servidor, se implento una estrategia de agregacion de datos en el cliente utilizando el operador forkJoin de RxJS:
+
+Se capturan las URLs de los personajes del episodio seleccionado.
+
+Se disparan multiples peticiones HTTP en paralelo para obtener los perfiles individuales.
+
+El sistema espera a que todas las peticiones se completen para mostrar la informacion completa (fotos y nombres) de una sola vez, evitando el "efecto de parpadeo" y entregando una carga de datos limpia y sincronizada.
+
+** Consistencia de Datos y Localizacion
+Se garantizo la coherencia visual en la presentacion de la informacion temporal. Utilizando el DatePipe de Angular, se estandarizo el campo "Fecha de estreno" (tanto en las tarjetas de la lista como en el detalle del modal) al formato local chileno dd/MM/yyyy. Esto demuestra un manejo profesional de la localizacion y asegura que el usuario reciba la informacion de manera clara y uniforme en toda la plataforma.
+
+** Gestion de Rutas y Prioridad de Navegacion
+Durante el desarrollo, se resolvio un conflicto de prioridad en el enrutamiento de la aplicacion. Se reestructuro el archivo app.routes.ts para asegurar que las rutas especificas tengan prioridad sobre las genericas. Al mover la ruta comodin (**) al final absoluto del arreglo de rutas, se permitio que el Router de Angular identifique correctamente las rutas de navegacion internas antes de aplicar la redireccion por defecto.
