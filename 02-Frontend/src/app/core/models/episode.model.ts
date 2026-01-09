@@ -1,8 +1,9 @@
 export interface Episode {
   id: number;
   name: string;
-  airDate: string;
+  air_date: string;
   episode: string;
+  characters: string[];
 }
 
 export interface EpisodeResponse {

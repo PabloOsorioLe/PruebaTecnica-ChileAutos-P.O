@@ -20,5 +20,19 @@ namespace BackendCore.Controllers
             var data = await _episodeService.GetEpisodesAsync(page);
             return Ok(data);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var data = await _episodeService.GetEpisodeByIdAsync(id);
+
+            if (data == null)
+            {
+                return NotFound(new { message = $"No se encontro el episodio con ID {id}" });
+            }
+
+            return Ok(data);
+        }
+
     }
 }

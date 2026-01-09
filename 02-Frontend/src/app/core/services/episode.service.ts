@@ -7,7 +7,6 @@ import { Episode, EpisodeResponse } from '../models/episode.model';
 export class EpisodeService {
   private http = inject(HttpClient);
   
-  // Usamos la URL del environment
   private apiUrl = `${environment.apiUrl}/Episodes`; 
 
   episodes = signal<Episode[]>([]);
@@ -26,4 +25,11 @@ export class EpisodeService {
       }
     });
   }
+getCharacterByUrl(url: string) {
+  return this.http.get<any>(url);
+}
+getEpisodeById(id: number) {
+  return this.http.get<Episode>(`${this.apiUrl}/${id}`);
+}
+
 }
