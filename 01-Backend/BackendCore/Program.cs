@@ -31,7 +31,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("ProductionPolicy", policy =>
     {
-        policy.WithOrigins("https://vercel.vercel.app") 
+        policy.WithOrigins("https://prueba-tecnica-chile-autos-p-o.vercel.app/episodios") 
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
