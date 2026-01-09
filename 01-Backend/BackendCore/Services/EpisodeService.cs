@@ -1,7 +1,7 @@
 ﻿using BackendCore.DTOs;
 using BackendCore.Interfaces;
 using System.Text.Json;
-using System.Net.Http.Json; // Necesario para GetFromJsonAsync
+using System.Net.Http.Json;
 
 namespace BackendCore.Services
 {

@@ -36,7 +36,7 @@ namespace BackendCore.Middlewares
             {
                 StatusCode = context.Response.StatusCode,
                 Message = "Error interno en el servidor (BFF).",
-                Detailed = exception.Message // En producción, esto debería ser más genérico
+                Detailed = exception.Message 
             };
 
             return context.Response.WriteAsync(JsonSerializer.Serialize(response));
