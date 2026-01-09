@@ -1,6 +1,6 @@
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
-using BackendCore.Interfaces; // Asegúrate de tener estos usings
+using BackendCore.Interfaces; 
 using BackendCore.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,8 +15,6 @@ builder.Services.AddHttpClient("RickAndMorty", client =>
     client.BaseAddress = new Uri(builder.Configuration["RickAndMortyApi:BaseUrl"] ?? "https://rickandmortyapi.com/api/");
 });
 
-// REQUISITO SOLID: Inyección de dependencias
-// Esta línea DEBE ir aquí, antes del Build
 builder.Services.AddScoped<IEpisodeService, EpisodeService>();
 
 builder.Services.AddControllers()
@@ -31,6 +29,14 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddCors(options =>
 {
+    options.AddPolicy("ProductionPolicy", policy =>
+    {
+        policy.WithOrigins("https://vercel.vercel.app") 
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+
+    // Mantenemos la de desarrollo para tus pruebas locales
     options.AddPolicy("AllowAngularDev", policy =>
     {
         policy.WithOrigins("http://localhost:4200")
@@ -48,7 +54,6 @@ var app = builder.Build();
 // 3. MIDDLEWARES (Configuración del Pipeline)
 // -----------------------------------------------------------
 
-// REQUISITO: Manejo de errores global
 app.UseMiddleware<BackendCore.Middlewares.ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())

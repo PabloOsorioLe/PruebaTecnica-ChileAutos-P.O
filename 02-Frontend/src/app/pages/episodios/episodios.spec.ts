@@ -22,7 +22,7 @@ describe('EpisodiosComponent', () => {
 
     fixture = TestBed.createComponent(EpisodiosComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges(); // Ejecuta el ciclo de vida inicial
+    fixture.detectChanges();
   });
 
   it('should create', () => {
